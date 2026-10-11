@@ -17,44 +17,30 @@ This capstone project implements an end-to-end cloud and DevOps architecture for
 - **Operational Health**: `/health` endpoint configured for uptime monitoring and container probes.
 
 ---
-
 ## 2. Cloud Architecture
-+-----------------------------------------------------------------------------------+
-|                                     Internet                                      |
-+-----------------------------------------------------------------------------------+
-|
-HTTP / Port 3000
-v
-+-----------------------------------------------------------------------------------+
-|                               AWS VPC (ap-south-1)                                |
-|                                                                                   |
-|  +-----------------------------------------------------------------------------+  |
-|  |                         AWS EC2 Host (Ubuntu Linux)                         |  |
-|  |                                                                             |  |
-|  |   +---------------------------------------------------------------------+   |  |
-|  |   |                     Docker Container Engine                         |   |  |
-|  |   |                                                                     |   |  |
-|  |   |   +-------------------------------------------------------------+   |   |  |
-|  |   |   |            E-Commerce Admin Application (Node.js)           |   |   |  |
-|  |   |   |                                                             |   |   |  |
-|  |   |   |   - Express.js HTTP Server                                  |   |   |  |
-|  |   |   |   - EJS Dynamic Server-Side Rendering                      |   |   |  |
-|  |   |   |   - Tailwind CSS User Interface                             |   |   |  |
-|  |   |   +------------------------------+------------------------------+   |   |  |
-|  |   +----------------------------------|----------------------------------+   |  |
-|  +--------------------------------------|--------------------------------------+  |
-|                                         |                                         |
-|                                PostgreSQL Port 5432                               |
-|                                   (Encrypted SSL)                                 |
-|                                         v                                         |
-|  +-----------------------------------------------------------------------------+  |
-|  |                        AWS RDS Managed Database                             |  |
-|  |                          (PostgreSQL Engine)                                |  |
-|  |                                                                             |  |
-|  |   - Automated Storage Management                                            |  |
-|  |   - Multi-AZ / VPC Security Group Isolation                                 |  |
-|  +-----------------------------------------------------------------------------+  |
-+-----------------------------------------------------------------------------------+
+
+```mermaid
+graph TD
+    User([Web Browser / Client]) -->|HTTP :3000| EC2[AWS EC2 Linux Host]
+    
+    subgraph EC2_Instance [AWS EC2 Instance]
+        subgraph Docker_Engine [Docker Engine]
+            App[E-Commerce Admin App<br/>Node.js / Express / EJS]
+        end
+    end
+    
+    EC2 --> App
+    App -->|PostgreSQL :5432 SSL| RDS[(AWS RDS Managed DB<br/>PostgreSQL 18)]
+
+    classDef aws fill:#FF9900,stroke:#232F3E,stroke-width:2px,color:#fff;
+    classDef app fill:#2496ED,stroke:#fff,stroke-width:2px,color:#fff;
+    classDef client fill:#333,stroke:#fff,stroke-width:2px,color:#fff;
+    
+    class RDS,EC2 aws;
+    class App app;
+    class User client;
+```
+
 ---
 
 ## 3. Tech Stack & Tools
